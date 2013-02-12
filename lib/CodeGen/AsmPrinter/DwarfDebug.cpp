@@ -711,7 +711,7 @@ CompileUnit *DwarfDebug::constructCompileUnit(const MDNode *N) {
   // is not okay to use line_table_start here.
   if (!useSplitDwarf()) {
     if (Asm->MAI->doesDwarfUseRelocationsAcrossSections())
-      NewCU->addLabel(Die, dwarf::DW_AT_stmt_list, dwarf::DW_FORM_data4,
+      NewCU->addSectionOffset(Die, dwarf::DW_AT_stmt_list, dwarf::DW_FORM_data4,
                       UseTheFirstCU ?
                       Asm->GetTempSymbol("section_line") : LineTableStartSym);
     else if (UseTheFirstCU)

@@ -139,6 +139,9 @@ X86MCAsmInfoMicrosoft::X86MCAsmInfoMicrosoft(const Triple &Triple) {
   AssemblerDialect = AsmWriterFlavor;
 
   TextAlignFillValue = 0x90;
+
+  // Debug Information
+  SupportsDebugInformation = true;
 }
 
 void X86MCAsmInfoGNUCOFF::anchor() { }

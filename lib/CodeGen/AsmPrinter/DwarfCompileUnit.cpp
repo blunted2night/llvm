@@ -153,14 +153,16 @@ void CompileUnit::addString(DIE *Die, unsigned Attribute, StringRef String) {
 void CompileUnit::addLocalString(DIE *Die, unsigned Attribute,
                                  StringRef String) {
   MCSymbol *Symb = DU->getStringPoolEntry(String);
-  DIEValue *Value;
   if (Asm->needsRelocationsForDwarfStringPool())
-    Value = new (DIEValueAllocator) DIELabel(Symb);
+  {
+    addSectionOffset (Die, Attribute, dwarf::DW_FORM_strp, Symb);
+  }
   else {
+    DIEValue *Value;
     MCSymbol *StringPool = DU->getStringPoolSym();
     Value = new (DIEValueAllocator) DIEDelta(Symb, StringPool);
+    Die->addValue(Attribute, dwarf::DW_FORM_strp, Value);
   }
-  Die->addValue(Attribute, dwarf::DW_FORM_strp, Value);
 }
 
 /// addLabel - Add a Dwarf label attribute data and value.
@@ -168,6 +170,15 @@ void CompileUnit::addLocalString(DIE *Die, unsigned Attribute,
 void CompileUnit::addLabel(DIE *Die, unsigned Attribute, unsigned Form,
                            const MCSymbol *Label) {
   DIEValue *Value = new (DIEValueAllocator) DIELabel(Label);
+  Die->addValue(Attribute, Form, Value);
+}
+ 
+/// addSectionOffset - Add a Dwarf section relative label attribute data and
+/// value.
+///
+void CompileUnit::addSectionOffset(DIE *Die, unsigned Attribute, unsigned Form,
+                          const MCSymbol *Label) {
+  DIEValue *Value = new (DIEValueAllocator) DIESectionOffset(Label);
   Die->addValue(Attribute, Form, Value);
 }
 
